@@ -6,6 +6,7 @@ import { createConnection } from 'typeorm';
 import { RegisterResolver } from './modules/user/register';
 import { LoginResolver } from './modules/user/login';
 import { MeResolver } from './modules/user/me';
+import { ConfirmUserResolver } from './modules/user/confirmUser';
 
 
 import session from "express-session";
@@ -20,13 +21,16 @@ const main = async () => {
     await createConnection();
 
     const schema = await buildSchema({
-        resolvers: [MeResolver, RegisterResolver, LoginResolver],
+        resolvers: [MeResolver, RegisterResolver, LoginResolver, ConfirmUserResolver],
+        authChecker: ({ context: { req } }) => {
+            return !!req.session.userId 
+        }
     });
 
 
-    const apolloServer = new ApolloServer({ 
-        schema, 
-        context: ({ req }: any) => ({ req }), 
+    const apolloServer = new ApolloServer({
+        schema,
+        context: ({ req }: any) => ({ req }),
         plugins: [ApolloServerPluginLandingPageGraphQLPlayground()]
     });
     await apolloServer.start();
