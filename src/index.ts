@@ -4,24 +4,31 @@ import Express from 'express';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
 import { RegisterResolver } from './modules/user/register';
-import { LoginResolver } from './modules/user/login'
+import { LoginResolver } from './modules/user/login';
+import { MeResolver } from './modules/user/me';
+
 
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
 
 import { redis } from "./redis";
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
 
 
 const main = async () => {
     await createConnection();
 
     const schema = await buildSchema({
-        resolvers: [RegisterResolver, LoginResolver],
+        resolvers: [MeResolver, RegisterResolver, LoginResolver],
     });
 
 
-    const apolloServer = new ApolloServer({ schema, context: ({ req }: any) => ({ req }) });
+    const apolloServer = new ApolloServer({ 
+        schema, 
+        context: ({ req }: any) => ({ req }), 
+        plugins: [ApolloServerPluginLandingPageGraphQLPlayground()]
+    });
     await apolloServer.start();
 
     const app = Express();
@@ -31,7 +38,7 @@ const main = async () => {
     app.use(
         cors({
             credentials: true,
-            origin: "https://studio.apollographql.com",
+            origin: "*",
         })
     );
 
@@ -45,10 +52,10 @@ const main = async () => {
             resave: false,
             saveUninitialized: false,
             cookie: {
-                // httpOnly: true,
-                sameSite: 'none',
-                secure: true,
-                // secure: process.env.NODE_ENV === "production",
+                httpOnly: true,
+                // sameSite: 'none',
+                // secure: true,
+                secure: process.env.NODE_ENV === "production",
                 maxAge: 1000 * 60 * 60 * 24 * 7 * 365 // 7 years
             }
         })
