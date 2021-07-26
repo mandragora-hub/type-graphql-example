@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node-dev --respawn src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "db:setup": "ts-node src/test-utils/setup.ts",
+    "test": "npm run db:setup && jest"
+
   },
   "keywords": [],
   "author": "",
@@ -14,6 +16,7 @@
     "@types/connect-redis": "0.0.17",
     "@types/cors": "^2.8.12",
     "@types/ioredis": "^4.26.6",
+    "@types/jest": "^26.0.24",
     "apollo-server": "^3.0.2",
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.13.1",
@@ -23,9 +26,11 @@
     "express-session": "^1.17.2",
     "graphql": "^15.5.1",
     "ioredis": "^4.27.6",
+    "jest": "^27.0.6",
     "nodemailer": "^6.6.3",
     "pg": "^8.6.0",
     "reflect-metadata": "^0.1.13",
+    "ts-jest": "^27.0.4",
     "type-graphql": "^1.1.1",
     "typeorm": "^0.2.34",
     "uuid": "^8.3.2"

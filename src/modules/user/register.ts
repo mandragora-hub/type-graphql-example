@@ -22,7 +22,10 @@ export class RegisterResolver {
     async register(
         @Arg("data") { email, firstName, lastName, password }: RegisterInput
     ): Promise<User> {
+        console.log(password);
         const hashedPassword = await bcryptjs.hash(password, 10);
+        console.log(hashedPassword);
+
         const user = await User.create({ firstName, lastName, email, password: hashedPassword }).save();
 
         await sendEmail(user.email, await createConfirmationUrl(user.id));
