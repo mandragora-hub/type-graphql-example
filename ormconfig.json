@@ -1,0 +1,13 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "sampleuser",
+    "password": "1234",
+    "database": "sampledb",
+    "synchronize": true,
+    "logging": true,
+    "entities": [
+        "src/entity/*.*"
+    ]
+ }
